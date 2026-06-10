@@ -1,0 +1,8 @@
+{
+    "nombre": "Pedido Prueba",
+    "fecha": "2026-06-09",
+    "total_piezas": 50,
+    "resumen": {
+        "camiseta M": 8
+    }
+}

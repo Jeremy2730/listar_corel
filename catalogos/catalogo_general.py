@@ -1,0 +1,4 @@
+from catalogos.camisetas import CATALOGO_CAMISETAS
+from catalogos.mangas import CATALOGO_MANGAS
+from catalogos.pantalonetas import CATALOGO_PANTALONETAS
+from catalogos.mangas_largas import CATALOGO_MANGAS_LARGAS

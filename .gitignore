@@ -1,0 +1,19 @@
+# Entorno virtual
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+
+# Archivos temporales
+*.log
+
+# Tests temporales
+.pytest_cache/
+
+# Windows
+Thumbs.db
+desktop.ini
