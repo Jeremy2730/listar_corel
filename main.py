@@ -40,6 +40,10 @@ opcion = menu.mostrar()
 
 if opcion == "1":
 
+    nombre_listado = input(
+        "\nNombre del listado: "
+    )
+
     corel = CorelAPI()
 
     if not corel.conectar():
@@ -48,6 +52,8 @@ if opcion == "1":
     print("DOCUMENTO:")
     print(corel.doc.Name)
     print()
+
+    nombre_documento = corel.doc.Name
 
     analizador = AnalizadorPiezas()
     
@@ -64,12 +70,17 @@ if opcion == "1":
     print()
 
     datos_pedido = {
-        "nombre": "Pedido Base",
+        "nombre": nombre_listado,
         "fecha": str(date.today()),
-        "total_piezas": sum(
-            analizador.obtener_resumen().values()
-        ),
-        "resumen": analizador.obtener_resumen()
+
+        "documentos": [
+            {
+                "archivo": nombre_documento,
+                "resumen": analizador.obtener_resumen()
+            }
+        ],
+
+        "acumulado": analizador.obtener_resumen()
     }
 
     pedido_manager.guardar(
