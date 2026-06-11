@@ -32,7 +32,13 @@ class CorelAPI:
                 return True
 
             except Exception as e:
-                print(e)
+
+                mensaje = str(e)
+
+                if "Cadena clase no válida" in mensaje:
+                    continue
+
+                raise
 
         print("No se encontro CorelDRAW abierto.")
 

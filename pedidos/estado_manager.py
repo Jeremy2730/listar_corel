@@ -40,3 +40,30 @@ class EstadoManager:
         ) as f:
 
             return json.load(f)
+        
+    def hay_pedido_activo(self):
+
+        datos = self.cargar()
+
+        return datos.get(
+            "pedido_activo",
+            False
+        )
+
+
+    def marcar_pedido_activo(self):
+
+        self.guardar(
+            {
+                "pedido_activo": True
+            }
+        )
+
+
+    def marcar_sin_pedido(self):
+
+        self.guardar(
+            {
+                "pedido_activo": False
+            }
+        )

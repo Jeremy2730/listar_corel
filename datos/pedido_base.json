@@ -1,8 +1,24 @@
 {
-    "nombre": "Pedido Prueba",
-    "fecha": "2026-06-09",
-    "total_piezas": 50,
+    "nombre": "Pedido Base",
+    "fecha": "2026-06-10",
+    "total_piezas": 76,
     "resumen": {
-        "camiseta M": 8
+        "camiseta 14": 2,
+        "manga 14": 2,
+        "pantaloneta 14": 2,
+        "camiseta 12": 6,
+        "manga 12": 6,
+        "pantaloneta 12": 6,
+        "camiseta M": 8,
+        "manga M": 8,
+        "pantaloneta M": 8,
+        "manga S": 6,
+        "camiseta S": 6,
+        "pantaloneta S": 6,
+        "camiseta 16": 2,
+        "manga 16": 2,
+        "pantaloneta 16": 2,
+        "manga XL": 2,
+        "camiseta XL": 2
     }
 }
