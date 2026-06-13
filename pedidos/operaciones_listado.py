@@ -64,3 +64,28 @@ class OperacionesListado:
             print(
                 "No existe listado."
             )
+
+
+    def listar_documento_actual(self):
+
+        corel = CorelAPI()
+
+        if not corel.conectar():
+            return
+
+        print()
+        print("DOCUMENTO:")
+        print(corel.doc.Name)
+        print()
+
+        analizador = AnalizadorPiezas()
+
+        for shape in corel.obtener_shapes():
+            analizador.analizar(shape)
+
+        resumen = ResumenProduccion(
+            analizador.obtener_resumen(),
+            analizador.obtener_no_reconocidos()
+        )
+
+        resumen.mostrar()
