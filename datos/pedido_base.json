@@ -1,13 +1,16 @@
 {
     "nombre": "uruguay",
-    "fecha": "2026-06-11",
+    "fecha": "2026-06-12",
     "documentos": [
         {
-            "archivo": "uruguay_3.cdr",
+            "archivo": "uruguay_1.cdr",
             "resumen": {
-                "pantaloneta 16": 2,
-                "pantaloneta S": 6,
-                "pantaloneta M": 8
+                "camiseta S": 2,
+                "camiseta M": 8,
+                "camiseta XL": 2,
+                "manga 16": 2,
+                "manga 14": 2,
+                "manga 12": 6
             }
         },
         {
@@ -23,14 +26,11 @@
             }
         },
         {
-            "archivo": "uruguay_1.cdr",
+            "archivo": "uruguay_3.cdr",
             "resumen": {
-                "camiseta S": 2,
-                "camiseta M": 8,
-                "camiseta XL": 2,
-                "manga 16": 2,
-                "manga 14": 2,
-                "manga 12": 6
+                "pantaloneta 16": 2,
+                "pantaloneta S": 6,
+                "pantaloneta M": 8
             }
         },
         {
@@ -42,21 +42,21 @@
         }
     ],
     "acumulado": {
-        "pantaloneta 16": 2,
-        "pantaloneta S": 6,
-        "pantaloneta M": 8,
-        "camiseta 12": 6,
-        "camiseta 14": 2,
-        "camiseta 16": 2,
         "camiseta S": 6,
-        "manga S": 6,
-        "manga M": 8,
-        "manga XL": 2,
         "camiseta M": 8,
         "camiseta XL": 2,
         "manga 16": 2,
         "manga 14": 2,
         "manga 12": 6,
+        "camiseta 12": 6,
+        "camiseta 14": 2,
+        "camiseta 16": 2,
+        "manga S": 6,
+        "manga M": 8,
+        "manga XL": 2,
+        "pantaloneta 16": 2,
+        "pantaloneta S": 6,
+        "pantaloneta M": 8,
         "pantaloneta 14": 2,
         "pantaloneta 12": 6
     }

@@ -20,14 +20,8 @@ Uso futuro:
 - Integración con el sistema de personalización de camisetas.
 """
 
-
-from corel.corel_api import CorelAPI
-from analizadores.analizador_piezas import AnalizadorPiezas
-from pedidos.resumen_produccion import ResumenProduccion
 from ui.menu import Menu
 from pedidos.pedido_manager import PedidoManager
-from pedidos.estado_manager import EstadoManager
-from datetime import date
 from pedidos.operaciones_listado import OperacionesListado
 
 menu = Menu()
@@ -36,177 +30,57 @@ pedido_manager = PedidoManager()
 
 operaciones_listado = OperacionesListado()
 
-estado_manager = EstadoManager()
+while True:
 
-opcion = menu.mostrar()
+    opcion = menu.mostrar()
 
-
-if opcion == "1":
-
-    nombre_listado = input(
-        "\nNombre del listado: "
-    )
-
-    corel = CorelAPI()
-
-    if not corel.conectar():
-        exit()
-    print()
-    print("DOCUMENTO:")
-    print(corel.doc.Name)
-    print()
-
-    nombre_documento = corel.doc.Name
-
-    analizador = AnalizadorPiezas()
-    
-    for shape in corel.obtener_shapes():
-        analizador.analizar(shape)
-
-    resumen = ResumenProduccion(
-        analizador.obtener_resumen(),
-        analizador.obtener_no_reconocidos()
-    )
-
-    resumen.mostrar()
-
-    print()
-
-    datos_pedido = {
-        "nombre": nombre_listado,
-        "fecha": str(date.today()),
-
-        "documentos": [
-            {
-                "archivo": nombre_documento,
-                "resumen": analizador.obtener_resumen()
-            }
-        ],
-
-        "acumulado": analizador.obtener_resumen()
-    }
-
-    pedido_manager.guardar(
-        datos_pedido
-    )
-
-    estado_manager.marcar_pedido_activo()
-
-    print(
-        "\nPedido guardado correctamente."
-    )
-
-
-if opcion == "2":
-
-    operaciones_listado.ver_listado()
-
-    exit()
-
-if opcion == "3":
-
-    pedido = pedido_manager.cargar()
-
-    if not pedido:
+    if not opcion.isdigit():
 
         print(
-            "No existe listado activo."
+            "\n⚠ Eso no es un número válido."
         )
 
-        exit()
+        continue
 
-    corel = CorelAPI()
-
-    if not corel.conectar():
-        exit()
-
-    nombre_documento = corel.doc.Name
-
-    print()
-    print("DOCUMENTO:")
-    print(nombre_documento)
-    print()
-
-    for doc in pedido["documentos"]:
-
-        if doc["archivo"] == nombre_documento:
-
-            print(
-                "Ese documento ya fue agregado."
-            )
-
-            exit()
-
-    analizador = AnalizadorPiezas()
-
-    for shape in corel.obtener_shapes():
-
-        analizador.analizar(shape)
-
-    resumen = ResumenProduccion(
-        analizador.obtener_resumen(),
-        analizador.obtener_no_reconocidos()
-    )
-
-    resumen.mostrar()
-
-    respuesta = input(
-        "\nAgregar documento al listado? (s/n): "
-    )
-
-    if respuesta.lower() != "s":
-
-        print(
-            "Operacion cancelada."
-        )
-
-        exit()
-
-    nuevo_documento = {
-
-        "archivo": nombre_documento,
-
-        "resumen": analizador.obtener_resumen()
-    }
-
-    pedido["documentos"].append(
-        nuevo_documento
-    )
-
-    for clave, cantidad in (
-        analizador.obtener_resumen().items()
+    if opcion not in (
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
     ):
 
-        pedido["acumulado"][clave] = (
-
-            pedido["acumulado"].get(
-                clave,
-                0
-            )
-
-            + cantidad
+        print(
+            f"\n⚠ La opción {opcion} no existe."
         )
 
-    pedido_manager.guardar(
-        pedido
-    )
+        continue
 
-    print(
-        "\nDocumento agregado correctamente."
-    )
+    if opcion == "1":
 
-    exit()
+        operaciones_listado.crear_listado()
 
+    elif opcion == "2":
 
-if opcion == "4":
+        operaciones_listado.administrar_listado()
 
-    operaciones_listado.eliminar_listado()
+    elif opcion == "3":
 
-    exit()
+        operaciones_listado.agregar_documento()
 
+    elif opcion == "4":
 
-if opcion == "5":
+        operaciones_listado.eliminar_listado()
 
-    operaciones_listado.listar_documento_actual()
+    elif opcion == "5":
 
-    exit()
+        operaciones_listado.listar_documento_actual()
+
+    elif opcion == "6":
+
+        print(
+            "\nHasta luego. Gracias por usar Listar Corel."
+        )
+
+        break
