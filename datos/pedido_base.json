@@ -1,24 +1,63 @@
 {
-    "nombre": "Pedido Base",
-    "fecha": "2026-06-10",
-    "total_piezas": 76,
-    "resumen": {
-        "camiseta 14": 2,
-        "manga 14": 2,
-        "pantaloneta 14": 2,
-        "camiseta 12": 6,
-        "manga 12": 6,
-        "pantaloneta 12": 6,
-        "camiseta M": 8,
-        "manga M": 8,
-        "pantaloneta M": 8,
-        "manga S": 6,
-        "camiseta S": 6,
-        "pantaloneta S": 6,
-        "camiseta 16": 2,
-        "manga 16": 2,
+    "nombre": "uruguay",
+    "fecha": "2026-06-11",
+    "documentos": [
+        {
+            "archivo": "uruguay_3.cdr",
+            "resumen": {
+                "pantaloneta 16": 2,
+                "pantaloneta S": 6,
+                "pantaloneta M": 8
+            }
+        },
+        {
+            "archivo": "uruguay_2.cdr",
+            "resumen": {
+                "camiseta 12": 6,
+                "camiseta 14": 2,
+                "camiseta 16": 2,
+                "camiseta S": 4,
+                "manga S": 6,
+                "manga M": 8,
+                "manga XL": 2
+            }
+        },
+        {
+            "archivo": "uruguay_1.cdr",
+            "resumen": {
+                "camiseta S": 2,
+                "camiseta M": 8,
+                "camiseta XL": 2,
+                "manga 16": 2,
+                "manga 14": 2,
+                "manga 12": 6
+            }
+        },
+        {
+            "archivo": "uruguay_4.cdr",
+            "resumen": {
+                "pantaloneta 14": 2,
+                "pantaloneta 12": 6
+            }
+        }
+    ],
+    "acumulado": {
         "pantaloneta 16": 2,
+        "pantaloneta S": 6,
+        "pantaloneta M": 8,
+        "camiseta 12": 6,
+        "camiseta 14": 2,
+        "camiseta 16": 2,
+        "camiseta S": 6,
+        "manga S": 6,
+        "manga M": 8,
         "manga XL": 2,
-        "camiseta XL": 2
+        "camiseta M": 8,
+        "camiseta XL": 2,
+        "manga 16": 2,
+        "manga 14": 2,
+        "manga 12": 6,
+        "pantaloneta 14": 2,
+        "pantaloneta 12": 6
     }
 }

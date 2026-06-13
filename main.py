@@ -28,10 +28,13 @@ from ui.menu import Menu
 from pedidos.pedido_manager import PedidoManager
 from pedidos.estado_manager import EstadoManager
 from datetime import date
+from pedidos.operaciones_listado import OperacionesListado
 
 menu = Menu()
 
 pedido_manager = PedidoManager()
+
+operaciones_listado = OperacionesListado()
 
 estado_manager = EstadoManager()
 
@@ -96,42 +99,134 @@ if opcion == "1":
 
 if opcion == "2":
 
+    operaciones_listado.ver_listado()
+
+    exit()
+
+if opcion == "3":
+
     pedido = pedido_manager.cargar()
 
     if not pedido:
 
-        print("No existe pedido guardado.")
+        print(
+            "No existe listado activo."
+        )
+
         exit()
 
-    print("\n===== PEDIDO ACTIVO =====\n")
+    corel = CorelAPI()
 
-    print(f"Nombre: {pedido['nombre']}")
-    print(f"Fecha: {pedido['fecha']}")
-    print(f"Total piezas: {pedido['total_piezas']}")
+    if not corel.conectar():
+        exit()
+
+    nombre_documento = corel.doc.Name
+
+    print()
+    print("DOCUMENTO:")
+    print(nombre_documento)
+    print()
+
+    for doc in pedido["documentos"]:
+
+        if doc["archivo"] == nombre_documento:
+
+            print(
+                "Ese documento ya fue agregado."
+            )
+
+            exit()
+
+    analizador = AnalizadorPiezas()
+
+    for shape in corel.obtener_shapes():
+
+        analizador.analizar(shape)
 
     resumen = ResumenProduccion(
-        pedido["resumen"]
+        analizador.obtener_resumen(),
+        analizador.obtener_no_reconocidos()
     )
 
     resumen.mostrar()
 
+    respuesta = input(
+        "\nAgregar documento al listado? (s/n): "
+    )
+
+    if respuesta.lower() != "s":
+
+        print(
+            "Operacion cancelada."
+        )
+
+        exit()
+
+    nuevo_documento = {
+
+        "archivo": nombre_documento,
+
+        "resumen": analizador.obtener_resumen()
+    }
+
+    pedido["documentos"].append(
+        nuevo_documento
+    )
+
+    for clave, cantidad in (
+        analizador.obtener_resumen().items()
+    ):
+
+        pedido["acumulado"][clave] = (
+
+            pedido["acumulado"].get(
+                clave,
+                0
+            )
+
+            + cantidad
+        )
+
+    pedido_manager.guardar(
+        pedido
+    )
+
+    print(
+        "\nDocumento agregado correctamente."
+    )
+
     exit()
 
 
-if opcion == "3":
+if opcion == "4":
 
-    if pedido_manager.eliminar():
+    operaciones_listado.eliminar_listado()
 
-        estado_manager.marcar_sin_pedido()
+    exit()
 
-        print(
-            "Pedido eliminado."
-        )
 
-    else:
+if opcion == "5":
 
-        print(
-            "No existe pedido."
-        )
+    corel = CorelAPI()
+
+    if not corel.conectar():
+        exit()
+
+    print()
+    print("DOCUMENTO:")
+    print(corel.doc.Name)
+    print()
+
+    analizador = AnalizadorPiezas()
+
+    for shape in corel.obtener_shapes():
+        analizador.analizar(shape)
+
+    resumen = ResumenProduccion(
+        analizador.obtener_resumen(),
+        analizador.obtener_no_reconocidos()
+    )
+
+    resumen.mostrar()
 
     exit()
