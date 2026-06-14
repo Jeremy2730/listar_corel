@@ -23,12 +23,18 @@ Uso futuro:
 from ui.menu import Menu
 from pedidos.pedido_manager import PedidoManager
 from pedidos.operaciones_listado import OperacionesListado
+from pedidos.estado_manager import EstadoManager
+
 
 menu = Menu()
 
 pedido_manager = PedidoManager()
 
 operaciones_listado = OperacionesListado()
+
+estado_manager = EstadoManager()
+
+operaciones_listado.mostrar_estado_actual()
 
 while True:
 

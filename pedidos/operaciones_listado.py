@@ -4,6 +4,7 @@ from pedidos.resumen_produccion import ResumenProduccion
 from pedidos.pedido_manager import PedidoManager
 from pedidos.estado_manager import EstadoManager
 from datetime import date
+from configuracion.orden_tallas import ORDEN_TALLAS
 
 
 class OperacionesListado:
@@ -49,6 +50,53 @@ class OperacionesListado:
             f"Total documentos: "
             f"{len(pedido['documentos'])}"
         )
+
+
+    def mostrar_estado_actual(self):
+
+        if not self.estado_manager.hay_pedido_activo():
+
+            print(
+                "\nNo existe listado activo.\n"
+            )
+
+            return
+
+        pedido = self.pedido_manager.cargar()
+
+        if not pedido:
+
+            print(
+                "\nNo existe listado activo.\n"
+            )
+
+            return
+
+        print("\n==========================")
+        print(
+            f"📋 Listado activo "
+        )
+        print("==========================\n")       
+
+        print(
+            f"Nombre: "
+            f"{pedido['nombre']}"
+        )
+
+        print(
+            f"Documentos: "
+            f"{len(pedido['documentos'])}"
+        )
+
+        total = sum(
+            pedido["acumulado"].values()
+        )
+
+        print(
+            f"Piezas acumuladas: {total}"
+        )
+
+        print()
 
 
     def crear_listado(self):
@@ -294,11 +342,13 @@ class OperacionesListado:
 
         pedido = self.pedido_manager.cargar()
 
+        acumulado = self.ordenar_resumen(
+            pedido["acumulado"]
+        )
+
         print("\n===== ACUMULADO =====\n")
 
-        for clave, cantidad in (
-            pedido["acumulado"].items()
-        ):
+        for clave, cantidad in acumulado.items():
 
             print(
                 f"{clave:<20} -> {cantidad}"
@@ -402,3 +452,29 @@ class OperacionesListado:
         print(
             "Acumulado recalculado."
         )
+
+    @staticmethod
+    def ordenar_resumen(resumen):
+
+        orden = {}
+
+        for clave, cantidad in resumen.items():
+
+            producto, talla = clave.rsplit(" ", 1)
+
+            if talla in ORDEN_TALLAS:
+                posicion = ORDEN_TALLAS.index(talla)
+            else:
+                posicion = 999
+
+            orden[clave] = (
+                posicion,
+                producto
+            )
+
+        return dict(
+            sorted(
+                resumen.items(),
+                key=lambda x: orden[x[0]]
+            )
+        )  
