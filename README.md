@@ -1,73 +1,224 @@
+
 # Listar Corel
 
 ## Objetivo
 
-Analizar automáticamente documentos de CorelDRAW para identificar piezas textiles, clasificarlas por talla y producto, y posteriormente comparar pedidos de producción.
+Analizar automáticamente documentos de CorelDRAW para identificar piezas textiles mediante sus medidas, clasificarlas por producto y talla, consolidar múltiples documentos de producción y comparar el resultado contra un pedido solicitado.
 
 ---
 
-## Funcionalidades implementadas
+# Funcionalidades implementadas
 
-### Corel
+## Integración con CorelDRAW
 
-- Conexión automática a CorelDRAW.
-- Detección de documento abierto.
-- Protección cuando Corel no está abierto.
-- Lectura de páginas y capas.
-- Lectura de shapes.
-
-### Catálogos
-
-- Camisetas.
-- Mangas.
-- Mangas largas.
-- Pantalonetas.
-
-### Identificación
-
-- Detección automática por medidas.
-- Tolerancia para diferencias de tamaño.
-- Clasificación por:
-  - Producto.
-  - Talla.
-
-### Producción
-
-- Resumen agrupado por talla.
-- Orden de impresión:
-  - 5XL
-  - 4XL
-  - 3XL
-  - 2XL
-  - XL
-  - L
-  - M
-  - S
-  - 16
-  - 14
-  - 12
-  - 10
-  - 8
-  - 6
-  - 4
-
-### Control de errores
-
-- No falla si Corel está cerrado.
-- No falla si no hay documento abierto.
-- Reporta piezas no reconocidas.
+* Conexión automática a CorelDRAW.
+* Detección de documento abierto.
+* Protección cuando CorelDRAW no está disponible.
+* Lectura automática de páginas.
+* Lectura automática de shapes.
+* Análisis directo sobre el documento activo.
 
 ---
 
-## Persistencia
+## Catálogos de producción
 
-### PedidoManager
+Actualmente soporta:
 
-Permite:
+* Camisetas
+* Mangas
+* Mangas largas
+* Pantalonetas
 
-- Guardar pedido base.
-- Cargar pedido base.
-- Eliminar pedido base.
+Cada catálogo contiene las medidas oficiales por talla.
+
+---
+
+## Identificación automática
+
+* Reconocimiento por medidas.
+* Tolerancia configurable para pequeñas diferencias.
+* Clasificación automática por:
+  * Producto
+  * Talla
+
+Ejemplos:
+
+```text
+camiseta XL
+camiseta M
+manga M
+pantaloneta 12
+```
+
+---
+
+## Gestión de listados
+
+El sistema permite crear un listado de producción persistente.
+
+Cada listado almacena:
+
+* Nombre del listado.
+* Fecha de creación.
+* Documentos agregados.
+* Acumulado general de piezas.
+
+Funciones disponibles:
+
+* Crear listado.
+* Agregar documento.
+* Eliminar documento.
+* Eliminar listado.
+* Consultar listado activo.
+
+---
+
+## Acumulado de producción
+
+Al agregar documentos:
+
+* Se evita duplicar documentos.
+* Se consolidan automáticamente las piezas.
+* Se recalcula el acumulado general.
+
+Ejemplo:
+
+```text
+camiseta XL -> 2
+manga XL -> 2
+pantaloneta XL -> 2
+```
+
+---
+
+## Conversión de piezas a prendas
+
+El sistema convierte automáticamente las piezas detectadas en prendas reales.
+
+### Camisetas
+
+Una camiseta completa equivale a:
+
+```text
+2 piezas camiseta
++
+2 mangas
+=
+1 camiseta
+```
+
+### Pantalonetas
+
+Una pantaloneta completa equivale a:
+
+```text
+2 piezas pantaloneta
+=
+1 pantaloneta
+```
+
+Ejemplo:
+
+```text
+camiseta XL -> 2 piezas
+manga XL -> 2 piezas
+```
+
+Se convierte automáticamente en:
+
+```text
+camiseta XL -> 1 prenda
+```
+
+---
+
+## Comparador de pedidos
+
+Implementado:
+
+### Pedido manual
+
+Permite ingresar cantidades por talla para:
+
+* Camisetas
+* Pantalonetas
+
+Posteriormente compara:
+
+```text
+Pedido
+vs
+Producción real
+```
+
+Mostrando:
+
+* COMPLETO
+* FALTAN
+* SOBRAN
+
+Ejemplo:
+
+```text
+camiseta M      Pedido: 4   Prod: 4   COMPLETO
+camiseta XL     Pedido: 2   Prod: 1   FALTAN 1
+```
+
+También calcula:
+
+```text
+Faltantes totales
+Sobrantes totales
+```
+
+---
+
+## Orden de tallas
+
+Todo el sistema utiliza un orden único:
+
+```text
+5XL
+4XL
+3XL
+2XL
+XL
+L
+M
+S
+16
+14
+12
+10
+8
+6
+4
+2
+0
+```
+
+---
+
+## Manejo de errores
+
+* CorelDRAW cerrado.
+* Documento no abierto.
+* Documento duplicado.
+* Listado inexistente.
+* Acumulados vacíos.
+* Piezas no reconocidas.
+
+---
+
+# Persistencia
+
+## PedidoManager
+
+Responsable de:
+
+* Guardar listado.
+* Cargar listado.
+* Eliminar listado.
 
 Archivo:
 
@@ -75,12 +226,14 @@ Archivo:
 datos/pedido_base.json
 ```
 
-### EstadoManager
+---
 
-Permite:
+## EstadoManager
 
-- Guardar estado.
-- Leer estado.
+Responsable de:
+
+* Guardar estado de la aplicación.
+* Detectar listado activo.
 
 Archivo:
 
@@ -98,84 +251,106 @@ Ejemplo:
 
 ---
 
-## Estructura actual
+# Estructura actual
 
 ```text
 listar_corel/
 ├── analizadores/
 ├── catalogos/
+├── comparador/
+├── configuracion/
 ├── corel/
 ├── datos/
-│   ├── estado.json
-│   └── pedido_base.json
+├── modelos/
 ├── pedidos/
-│   ├── pedido_manager.py
-│   ├── estado_manager.py
-│   └── resumen_produccion.py
 ├── tests/
 ├── ui/
 ├── main.py
-└── modelos.py
+├── README.md
+└── requirements.txt
 ```
 
 ---
 
-## Próximas fases
-
-### Fase 1
-
-Crear:
+# Arquitectura principal
 
 ```text
-ui/menu.py
+Menu
+│
+└── OperacionesListado
+    ├── crear_listado()
+    ├── agregar_documento()
+    ├── eliminar_documento()
+    ├── ver_acumulado()
+    ├── comparar_pedido()
+    └── eliminar_listado()
 ```
-
-Objetivo:
-
-- Crear pedido base.
-- Continuar pedido.
-- Eliminar pedido.
-- Solo listar documento.
-
-### Fase 2
-
-Detección automática de pedido activo.
-
-Al iniciar:
-
-```text
-Hay un pedido guardado.
-
-1. Continuar pedido
-2. Crear nuevo pedido
-3. Eliminar pedido
-4. Solo listar documento actual
-```
-
-### Fase 3
-
-Guardar pedido base desde documento abierto.
-
-### Fase 4
-
-Comparación de documentos de producción contra pedido base.
-
-### Fase 5
-
-Control de avance:
-
-- Archivos revisados.
-- Piezas encontradas.
-- Faltantes.
-- Sobrantes.
 
 ---
 
-## Estado actual
+# Estado actual
 
 Proyecto estable.
 
-Última funcionalidad completada:
+Funcionalidades completadas:
 
-- Resumen de producción por talla.
-- Persistencia mediante PedidoManager y EstadoManager.
+* Persistencia de listados.
+* Acumulado de múltiples documentos.
+* Conversión de piezas a prendas.
+* Comparador manual de pedidos.
+* Administración de documentos.
+* Ordenamiento unificado por tallas.
+* Refactorización del módulo de comparación.
+
+---
+
+# Próximas fases
+
+## Fase 1
+
+Comparación mediante Excel.
+
+```text
+Comparar pedido
+├── Manual
+└── Excel
+```
+
+---
+
+## Fase 2
+
+Plantilla estándar de importación.
+
+---
+
+## Fase 3
+
+Reportes de producción.
+
+* Faltantes.
+* Sobrantes.
+* Cumplimiento por talla.
+
+---
+
+## Fase 4
+
+Diferenciación completa de piezas.
+
+Ejemplo:
+
+```text
+delantero
+espalda
+manga izquierda
+manga derecha
+```
+
+para aumentar la precisión del análisis.
+
+---
+
+## Fase 5
+
+Automatización avanzada para producción textil basada en CorelDRAW.

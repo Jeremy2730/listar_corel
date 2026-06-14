@@ -5,7 +5,8 @@ from pedidos.pedido_manager import PedidoManager
 from pedidos.estado_manager import EstadoManager
 from datetime import date
 from configuracion.orden_tallas import ORDEN_TALLAS
-
+from comparador.conversor_prendas import obtener_prendas_producidas
+from comparador.comparador_pedido import ComparadorPedido
 
 class OperacionesListado:
 
@@ -14,6 +15,7 @@ class OperacionesListado:
 
         self.pedido_manager = PedidoManager()
         self.estado_manager = EstadoManager()
+        self.comparador = ComparadorPedido()
 
 
     def ver_listado(self):
@@ -165,42 +167,85 @@ class OperacionesListado:
             print("No existe listado guardado.")
             return
 
+
         while True:
 
-            self.ver_listado()
-
-            print("\nAcciones:\n")
+            print("\n=== ADMINISTRAR LISTADO ===")
             print("1. Ver acumulado")
             print("2. Eliminar documento")
-            print("3. Volver")
+            print("3. Comparar pedido")
+            print("4. Volver")
 
-            opcion = input("\nSeleccione: ")
+            opcion = input("Seleccione una opción: ").strip()
 
             if opcion == "1":
-
                 self.ver_acumulado()
 
-                input(
-                    "\nPresione ENTER para continuar..."
-                )
-
             elif opcion == "2":
-
                 self.eliminar_documento()
 
-                input(
-                    "\nPresione ENTER para continuar..."
-                )
-
             elif opcion == "3":
+                self.menu_comparar_pedido()
 
-                return
+            elif opcion == "4":
+                break
 
             else:
+                print("Opción inválida.")
 
-                print(
-                    "\nOpción no válida."
-                )
+
+    def menu_comparar_pedido(self):
+
+        while True:
+
+            print("\n=== COMPARAR PEDIDO ===")
+            print("1. Pedido manual")
+            print("2. Pedido Excel")
+            print("3. Volver")
+
+            opcion = input("Seleccione una opción: ").strip()
+
+            if opcion == "1":
+                self.comparar_pedido_manual()
+
+            elif opcion == "2":
+                print("Función aún no implementada.")
+
+            elif opcion == "3":
+                break
+
+            else:
+                print("Opción inválida.")
+
+
+    def comparar_pedido_manual(self):
+
+        pedido_manual = (
+            self.comparador
+            .capturar_pedido_manual()
+        )
+
+        pedido_guardado = (
+            self.pedido_manager.cargar()
+        )
+
+        produccion = obtener_prendas_producidas(
+            pedido_guardado["acumulado"]
+        )
+
+        resultado, faltantes, sobrantes = (
+
+            self.comparador.comparar_pedido(
+                pedido_manual,
+                produccion
+            )
+        )
+
+        self.comparador.mostrar_comparacion(
+            resultado,
+            faltantes,
+            sobrantes
+        )
 
 
     def agregar_documento(self):
@@ -342,6 +387,14 @@ class OperacionesListado:
 
         pedido = self.pedido_manager.cargar()
 
+        if not pedido["acumulado"]:
+
+            print(
+                "\nNo hay piezas reconocidas."
+            )
+
+            return
+
         acumulado = self.ordenar_resumen(
             pedido["acumulado"]
         )
@@ -353,6 +406,33 @@ class OperacionesListado:
             print(
                 f"{clave:<20} -> {cantidad}"
             )
+        prendas = obtener_prendas_producidas(
+            pedido["acumulado"]
+        )
+
+        print("\n===== PRENDAS =====\n")
+
+        for talla in ORDEN_TALLAS:
+
+            clave = f"camiseta {talla}"
+
+            if clave in prendas:
+
+                print(
+                    f"{clave:<20} -> {prendas[clave]}"
+                )
+
+        print()
+
+        for talla in ORDEN_TALLAS:
+
+            clave = f"pantaloneta {talla}"
+
+            if clave in prendas:
+
+                print(
+                    f"{clave:<20} -> {prendas[clave]}"
+                )
 
 
     def eliminar_documento(self):
@@ -452,6 +532,7 @@ class OperacionesListado:
         print(
             "Acumulado recalculado."
         )
+
 
     @staticmethod
     def ordenar_resumen(resumen):
