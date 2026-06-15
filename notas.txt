@@ -1,11 +1,9 @@
 python main.py                   ---ejecutar
 .\.venv\Scripts\activate         ---activar venv
 
-python -m tests.probar_menu
+py -3.11 -m venv .venv
 
-"Continuemos el proyecto listar_corel.
-Ya tenemos AnalizadorPiezas, PedidoManager, EstadoManager y ResumenProduccion funcionando. 
-Vamos a empezar con ui/menu.py."
+python -m tests.probar_menu
 
 
 rm -r .venv                      ---borrar entorno

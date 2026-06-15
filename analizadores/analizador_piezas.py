@@ -29,16 +29,18 @@ class AnalizadorPiezas:
                 return
 
             medidas = sorted([ancho, alto])
+            nombre_shape = shape.Name.strip().lower()
 
             resultado = self.buscador.buscar(
                 medidas[0],
-                medidas[1]
+                medidas[1],
+                nombre_shape
             )
 
             if resultado:
 
                 clave = (
-                    f"{resultado['producto']} "
+                    f"{resultado['pieza']} "
                     f"{resultado['talla']}"
                 )
 

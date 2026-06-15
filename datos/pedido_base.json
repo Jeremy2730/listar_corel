@@ -1,63 +1,74 @@
 {
     "nombre": "uruguay",
-    "fecha": "2026-06-12",
+    "fecha": "2026-06-14",
     "documentos": [
         {
             "archivo": "uruguay_1.cdr",
             "resumen": {
-                "camiseta S": 2,
-                "camiseta M": 8,
-                "camiseta XL": 2,
-                "manga 16": 2,
-                "manga 14": 2,
-                "manga 12": 6
+                "espalda S": 1,
+                "delantero S": 1,
+                "espalda M": 4,
+                "delantero M": 4,
+                "espalda XL": 1,
+                "delantero XL": 1,
+                "manga derecha 16": 1,
+                "manga izquierda 16": 1,
+                "manga derecha 14": 1,
+                "manga izquierda 14": 1,
+                "manga derecha 12": 3,
+                "manga izquierda 12": 3
             }
         },
         {
             "archivo": "uruguay_2.cdr",
             "resumen": {
-                "camiseta 12": 6,
-                "camiseta 14": 2,
-                "camiseta 16": 2,
-                "camiseta S": 4,
-                "manga S": 6,
-                "manga M": 8,
-                "manga XL": 2
+                "espalda 12": 3,
+                "delantero 12": 3,
+                "espalda 14": 1,
+                "delantero 14": 1,
+                "espalda 16": 1,
+                "delantero 16": 1,
+                "espalda S": 2,
+                "delantero S": 2,
+                "manga izquierda S": 6,
+                "manga derecha M": 4,
+                "manga izquierda M": 4,
+                "manga derecha XL": 1,
+                "manga izquierda XL": 1
             }
         },
         {
             "archivo": "uruguay_3.cdr",
-            "resumen": {
-                "pantaloneta 16": 2,
-                "pantaloneta S": 6,
-                "pantaloneta M": 8
-            }
+            "resumen": {}
         },
         {
             "archivo": "uruguay_4.cdr",
-            "resumen": {
-                "pantaloneta 14": 2,
-                "pantaloneta 12": 6
-            }
+            "resumen": {}
         }
     ],
     "acumulado": {
-        "camiseta S": 6,
-        "camiseta M": 8,
-        "camiseta XL": 2,
-        "manga 16": 2,
-        "manga 14": 2,
-        "manga 12": 6,
-        "camiseta 12": 6,
-        "camiseta 14": 2,
-        "camiseta 16": 2,
-        "manga S": 6,
-        "manga M": 8,
-        "manga XL": 2,
-        "pantaloneta 16": 2,
-        "pantaloneta S": 6,
-        "pantaloneta M": 8,
-        "pantaloneta 14": 2,
-        "pantaloneta 12": 6
+        "espalda S": 3,
+        "delantero S": 3,
+        "espalda M": 4,
+        "delantero M": 4,
+        "espalda XL": 1,
+        "delantero XL": 1,
+        "manga derecha 16": 1,
+        "manga izquierda 16": 1,
+        "manga derecha 14": 1,
+        "manga izquierda 14": 1,
+        "manga derecha 12": 3,
+        "manga izquierda 12": 3,
+        "espalda 12": 3,
+        "delantero 12": 3,
+        "espalda 14": 1,
+        "delantero 14": 1,
+        "espalda 16": 1,
+        "delantero 16": 1,
+        "manga izquierda S": 6,
+        "manga derecha M": 4,
+        "manga izquierda M": 4,
+        "manga derecha XL": 1,
+        "manga izquierda XL": 1
     }
 }

@@ -1,12 +1,13 @@
 from corel.corel_api import CorelAPI
 from analizadores.analizador_piezas import AnalizadorPiezas
+from pedidos.resumen_documento import ResumenDocumento
 from pedidos.resumen_produccion import ResumenProduccion
 from pedidos.pedido_manager import PedidoManager
 from pedidos.estado_manager import EstadoManager
 from datetime import date
 from configuracion.orden_tallas import ORDEN_TALLAS
-from comparador.conversor_prendas import obtener_prendas_producidas
 from comparador.comparador_pedido import ComparadorPedido
+from comparador.ensamblador_prendas import EnsambladorPrendas
 
 class OperacionesListado:
 
@@ -16,6 +17,7 @@ class OperacionesListado:
         self.pedido_manager = PedidoManager()
         self.estado_manager = EstadoManager()
         self.comparador = ComparadorPedido()
+        self.ensamblador = EnsambladorPrendas()
 
 
     def ver_listado(self):
@@ -229,7 +231,7 @@ class OperacionesListado:
             self.pedido_manager.cargar()
         )
 
-        produccion = obtener_prendas_producidas(
+        produccion = self.ensamblador.obtener_prendas(
             pedido_guardado["acumulado"]
         )
 
@@ -375,7 +377,8 @@ class OperacionesListado:
         for shape in corel.obtener_shapes():
             analizador.analizar(shape)
 
-        resumen = ResumenProduccion(
+
+        resumen = ResumenDocumento(
             analizador.obtener_resumen(),
             analizador.obtener_no_reconocidos()
         )
@@ -406,33 +409,44 @@ class OperacionesListado:
             print(
                 f"{clave:<20} -> {cantidad}"
             )
-        prendas = obtener_prendas_producidas(
+        prendas = self.ensamblador.obtener_prendas(
             pedido["acumulado"]
         )
 
-        print("\n===== PRENDAS =====\n")
+        incompletos = self.ensamblador.obtener_incompletos(
+            pedido["acumulado"]
+        )
 
-        for talla in ORDEN_TALLAS:
 
-            clave = f"camiseta {talla}"
+        if prendas:
 
-            if clave in prendas:
+            print("\n===== PRENDAS =====\n")
 
-                print(
-                    f"{clave:<20} -> {prendas[clave]}"
-                )
-
-        print()
-
-        for talla in ORDEN_TALLAS:
-
-            clave = f"pantaloneta {talla}"
-
-            if clave in prendas:
+            for clave, cantidad in prendas.items():
 
                 print(
-                    f"{clave:<20} -> {prendas[clave]}"
+                    f"{clave:<25} -> {cantidad}"
                 )
+
+        if incompletos:
+
+            print("\n===== INCOMPLETOS =====\n")
+
+            for item in incompletos:
+
+                print(
+                    f"{item['prenda']} {item['talla']}"
+                )
+
+                for pieza, cantidad in (
+                    item["piezas"].items()
+                ):
+
+                    print(
+                        f"  {pieza:<20}: {cantidad}"
+                    )
+
+                print()  
 
 
     def eliminar_documento(self):

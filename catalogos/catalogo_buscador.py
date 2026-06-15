@@ -15,7 +15,20 @@ class BuscadorCatalogo:
             "pantaloneta": CATALOGO_PANTALONETAS
         }
 
-    def buscar(self, ancho, alto):
+    def buscar(
+        self,
+        ancho,
+        alto,
+        nombre_shape
+        ):
+
+        nombre_shape = (
+            nombre_shape
+            .lower()
+            .strip()
+            .replace("_", " ")
+            .replace("-", " ")
+        )
 
         ancho = round(ancho, 1)
         alto = round(alto, 1)
@@ -30,6 +43,21 @@ class BuscadorCatalogo:
             for talla, piezas in catalogo.items():
 
                 for pieza, datos in piezas.items():
+
+                    pieza_normalizada = (
+                        pieza
+                        .lower()
+                        .strip()
+                        .replace("_", " ")
+                        .replace("-", " ")
+                    )
+
+                    if nombre_shape:
+
+                        if nombre_shape != pieza_normalizada:
+
+                            continue
+
 
                     medidas_catalogo = sorted([
                         round(datos["ancho"], 1),
@@ -59,6 +87,7 @@ class BuscadorCatalogo:
                             "pieza": pieza
                         }
 
+    
         if menor_error <= 1:
 
             return mejor_match

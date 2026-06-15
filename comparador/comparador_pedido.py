@@ -1,4 +1,5 @@
 from configuracion.orden_tallas import ORDEN_TALLAS
+from comparador.configuracion_prendas import PRENDAS
 
 
 class ComparadorPedido: 
@@ -7,51 +8,36 @@ class ComparadorPedido:
 
         pedido = {}
 
-        print("\n===== PEDIDO CAMISETAS =====")
+        for nombre_prenda in PRENDAS:
 
-        for talla in ORDEN_TALLAS:
+            print(
+                f"\n===== PEDIDO {nombre_prenda.upper()} ====="
+            )
 
-            texto = input(f"{talla}: ").strip()
+            for talla in ORDEN_TALLAS:
 
-            if not texto:
-                continue
+                texto = input(
+                    f"{talla}: "
+                ).strip()
 
-            try:
+                if not texto:
+                    continue
 
-                cantidad = int(texto)
+                try:
 
-                if cantidad > 0:
+                    cantidad = int(texto)
 
-                    pedido[
-                        f"camiseta {talla}"
-                    ] = cantidad
+                    if cantidad > 0:
 
-            except ValueError:
+                        pedido[
+                            f"{nombre_prenda} {talla}"
+                        ] = cantidad
 
-                print("Valor inválido")
+                except ValueError:
 
-        print("\n===== PEDIDO PANTALONETAS =====")
-
-        for talla in ORDEN_TALLAS:
-
-            texto = input(f"{talla}: ").strip()
-
-            if not texto:
-                continue
-
-            try:
-
-                cantidad = int(texto)
-
-                if cantidad > 0:
-
-                    pedido[
-                        f"pantaloneta {talla}"
-                    ] = cantidad
-
-            except ValueError:
-
-                print("Valor inválido")
+                    print(
+                        "Valor inválido"
+                    )
 
         return pedido
 
@@ -60,17 +46,13 @@ class ComparadorPedido:
 
         claves = []
 
-        for talla in ORDEN_TALLAS:
+        for nombre_prenda in PRENDAS:
 
-            claves.append(
-                f"camiseta {talla}"
-            )
+            for talla in ORDEN_TALLAS:
 
-        for talla in ORDEN_TALLAS:
-
-            claves.append(
-                f"pantaloneta {talla}"
-            )
+                claves.append(
+                    f"{nombre_prenda} {talla}"
+                )
 
         return claves
 
@@ -85,10 +67,6 @@ class ComparadorPedido:
 
         faltantes_totales = 0
         sobrantes_totales = 0
-
-        claves = set(pedido.keys()) | set(
-            produccion.keys()
-        )
 
         for clave in self.obtener_claves_ordenadas():
 

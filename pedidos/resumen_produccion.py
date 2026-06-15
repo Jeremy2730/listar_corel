@@ -1,3 +1,4 @@
+from comparador.ensamblador_prendas import EnsambladorPrendas
 from configuracion.orden_tallas import ORDEN_TALLAS
 
 
@@ -16,19 +17,58 @@ class ResumenProduccion:
 
         agrupado = {}
 
-        for clave, cantidad in self.conteo.items():
+        for clave, cantidad in sorted(self.conteo.items()):
 
-            producto, talla = clave.split(" ", 1)
+            producto, talla = clave.rsplit(" ", 1)
 
             if talla not in agrupado:
                 agrupado[talla] = {}
 
             agrupado[talla][producto] = cantidad
 
+
+        ensamblador = EnsambladorPrendas()
+
+        prendas = ensamblador.obtener_prendas(
+            self.conteo
+        )
+
+        incompletos = ensamblador.obtener_incompletos(
+            self.conteo
+        )
+
+        if prendas:
+
+            print("\n===== PRENDAS =====\n")
+
+            for clave, cantidad in prendas.items():
+
+                print(
+                    f"{clave:<20} -> {cantidad}"
+                )
+
+        if incompletos:
+
+            print("\n===== INCOMPLETOS =====\n")
+
+            for item in incompletos:
+
+                print(
+                    f"{item['prenda']} {item['talla']}"
+                )
+
+                for pieza, cantidad in item["piezas"].items():
+
+                    print(
+                        f"  {pieza:<18}: {cantidad}"
+                    )
+
+                print()     
+
         print("\n===== PRODUCCION =====\n")
 
         for talla in ORDEN_TALLAS:
-
+            
             if talla not in agrupado:
                 continue
 
@@ -39,7 +79,7 @@ class ResumenProduccion:
             for producto, cantidad in agrupado[talla].items():
 
                 print(
-                    f"{producto:<15} -> {cantidad}"
+                    f"{producto:<20} -> {cantidad}"
                 )
 
                 total_talla += cantidad
