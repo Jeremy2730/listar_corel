@@ -8,11 +8,11 @@ class Pieza:
         self.page = getattr(shape, "PageIndex", 0)
 
         # Medidas
-        self.ancho = 0
-        self.alto = 0
+        self.ancho = 0.0
+        self.alto = 0.0
 
         # Identidad
-        self.nombre = getattr(shape, "Name", None)
+        self.nombre = getattr(shape, "Name", "") or ""
 
         # Clasificación
         self.reconocida = False
@@ -20,3 +20,8 @@ class Pieza:
 
         # Producción
         self.cantidad = 1
+
+        # Resultado catálogo
+        self.producto = None
+        self.pieza = None
+        self.talla = None

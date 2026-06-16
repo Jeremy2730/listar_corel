@@ -8,6 +8,7 @@ from datetime import date
 from configuracion.orden_tallas import ORDEN_TALLAS
 from comparador.comparador_pedido import ComparadorPedido
 from comparador.ensamblador_prendas import EnsambladorPrendas
+from agentes.agente_pedido_manual import AgentePedidoManual
 
 class OperacionesListado:
 
@@ -222,10 +223,9 @@ class OperacionesListado:
 
     def comparar_pedido_manual(self):
 
-        pedido_manual = (
-            self.comparador
-            .capturar_pedido_manual()
-        )
+        agente = AgentePedidoManual()
+
+        pedido_manual = agente.capturar()
 
         pedido_guardado = (
             self.pedido_manager.cargar()

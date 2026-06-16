@@ -1,5 +1,7 @@
 from collections import defaultdict
 from catalogos.catalogo_buscador import BuscadorCatalogo
+from inventario.estante_piezas import EstantePiezas
+from modelos.pieza import Pieza
 
 class AnalizadorPiezas:
 
@@ -7,6 +9,7 @@ class AnalizadorPiezas:
 
     def __init__(self):
 
+        self.estante = EstantePiezas()
         self.conteo = defaultdict(int)
         self.no_reconocidos = {}
         self.buscador = BuscadorCatalogo()
@@ -29,6 +32,14 @@ class AnalizadorPiezas:
                 return
 
             medidas = sorted([ancho, alto])
+
+            pieza = Pieza(shape)
+
+            pieza.ancho = medidas[0]
+            pieza.alto = medidas[1]
+
+            self.estante.guardar(pieza)
+
             nombre_shape = (getattr(shape, "Name", "") or "").strip().lower()
 
             resultado = self.buscador.buscar(
