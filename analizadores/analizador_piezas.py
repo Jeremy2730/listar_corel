@@ -8,7 +8,7 @@ class AnalizadorPiezas:
     def __init__(self):
 
         self.conteo = defaultdict(int)
-        self.no_reconocidos = defaultdict(int)
+        self.no_reconocidos = {}
         self.buscador = BuscadorCatalogo()
 
     def analizar(self, shape):
@@ -29,7 +29,7 @@ class AnalizadorPiezas:
                 return
 
             medidas = sorted([ancho, alto])
-            nombre_shape = shape.Name.strip().lower()
+            nombre_shape = (getattr(shape, "Name", "") or "").strip().lower()
 
             resultado = self.buscador.buscar(
                 medidas[0],
@@ -53,7 +53,18 @@ class AnalizadorPiezas:
                     f"{self.formatear(medidas[1])} cm"
                 )
 
-                self.no_reconocidos[clave] += 1
+                if nombre_shape:
+                    clave = f"{nombre_shape} | {clave}"
+
+                if clave not in self.no_reconocidos:
+
+                    self.no_reconocidos[clave] = {
+                        "cantidad": 0,
+                        "nombre": nombre_shape if nombre_shape else None,
+                        "medidas": (medidas[0], medidas[1])
+                    }
+
+                self.no_reconocidos[clave]["cantidad"] += 1
 
         except Exception as e:
 
@@ -70,17 +81,25 @@ class AnalizadorPiezas:
 
         print("\n===== NO RECONOCIDOS =====\n")
 
-        for clave, cantidad in sorted(self.no_reconocidos.items()):
+        for clave, data in sorted(self.no_reconocidos.items()):
 
-            print(f"{clave} -> {cantidad} piezas")
+            nombre = data.get("nombre")
+            cantidad = data["cantidad"]
+
+            if nombre:
+                print(f"{nombre} | {clave} -> {cantidad} piezas")
+            else:
+                print(f"{clave} -> {cantidad} piezas")
 
 
     def formatear(self, valor):
 
-        if valor.is_integer():
-            return str(int(valor))
-
-        return str(valor)
+        try:
+            if float(valor).is_integer():
+                return str(int(valor))
+            return str(valor)
+        except:
+            return str(valor)
 
 
     def obtener_resumen(self):
@@ -93,7 +112,7 @@ class AnalizadorPiezas:
     
     def total_no_reconocidos(self):
 
-        return sum(self.no_reconocidos.values())
+        return sum(item["cantidad"] for item in self.no_reconocidos.values())
     
     def obtener_no_reconocidos(self):
 

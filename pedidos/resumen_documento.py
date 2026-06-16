@@ -65,7 +65,8 @@ class ResumenDocumento:
         )
 
         no_reconocidos = sum(
-            self.no_reconocidos.values()
+            item["cantidad"]
+            for item in self.no_reconocidos.values()
         )
 
         print(
@@ -78,6 +79,27 @@ class ResumenDocumento:
 
         if no_reconocidos:
 
-            print(
-                "\n⚠ Existen piezas no reconocidas."
-            )
+            respuesta = input(
+                "\n¿Ver piezas no reconocidas? (S/N): "
+            ).strip().upper()
+
+            if respuesta == "S":
+
+                print(
+                    "\n===== NO RECONOCIDOS =====\n"
+                )
+
+                for clave, data in self.no_reconocidos.items():
+                    cantidad = data["cantidad"]
+
+                    print(
+                        f"{clave} -> {cantidad}"
+                    )
+
+
+    def mostrar_acumulado(self):
+
+        print("\n===== ACUMULADO =====\n")
+
+        for clave, cantidad in sorted(self.conteo.items()):
+            print(f"{clave:<25} -> {cantidad}")
