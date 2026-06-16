@@ -8,6 +8,8 @@ from datetime import date
 from configuracion.orden_tallas import ORDEN_TALLAS
 from comparador.comparador_pedido import ComparadorPedido
 from comparador.ensamblador_prendas import EnsambladorPrendas
+from pedidos.resumen_documento import ResumenDocumento
+from comparador.motor_prioridad import MotorPrioridad
 
 class OperacionesListado:
 
@@ -18,6 +20,7 @@ class OperacionesListado:
         self.estado_manager = EstadoManager()
         self.comparador = ComparadorPedido()
         self.ensamblador = EnsambladorPrendas()
+        self.motor = MotorPrioridad()
 
 
     def ver_listado(self):
@@ -181,7 +184,9 @@ class OperacionesListado:
             opcion = input("Seleccione una opción: ").strip()
 
             if opcion == "1":
-                self.ver_acumulado()
+
+                resumen = ResumenDocumento(pedido["acumulado"])
+                resumen.mostrar_acumulado()
 
             elif opcion == "2":
                 self.eliminar_documento()
@@ -222,25 +227,21 @@ class OperacionesListado:
 
     def comparar_pedido_manual(self):
 
-        pedido_manual = (
-            self.comparador
-            .capturar_pedido_manual()
-        )
+        pedido_manual = self.comparador.capturar_pedido_manual()
 
-        pedido_guardado = (
-            self.pedido_manager.cargar()
-        )
+        if not pedido_manual:
+            print("No hay pedido para comparar")
+            return
+
+        pedido_guardado = self.pedido_manager.cargar()
 
         produccion = self.ensamblador.obtener_prendas(
             pedido_guardado["acumulado"]
         )
 
-        resultado, faltantes, sobrantes = (
-
-            self.comparador.comparar_pedido(
-                pedido_manual,
-                produccion
-            )
+        resultado, faltantes, sobrantes = self.comparador.comparar_pedido(
+            pedido_manual,
+            produccion
         )
 
         self.comparador.mostrar_comparacion(
@@ -390,12 +391,8 @@ class OperacionesListado:
 
         pedido = self.pedido_manager.cargar()
 
-        if not pedido["acumulado"]:
-
-            print(
-                "\nNo hay piezas reconocidas."
-            )
-
+        if not pedido or not pedido["acumulado"]:
+            print("\nNo hay piezas reconocidas.")
             return
 
         acumulado = self.ordenar_resumen(
@@ -405,28 +402,24 @@ class OperacionesListado:
         print("\n===== ACUMULADO =====\n")
 
         for clave, cantidad in acumulado.items():
+            print(f"{clave:<20} -> {cantidad}")
 
-            print(
-                f"{clave:<20} -> {cantidad}"
-            )
-        prendas = self.ensamblador.obtener_prendas(
+        # 🔥 PRENDAS BASE (camiseta, buso, peto, pantaloneta)
+        prendas_base = self.ensamblador.obtener_prendas_base(
             pedido["acumulado"]
         )
 
+        # 🔥 INCOMPLETOS
         incompletos = self.ensamblador.obtener_incompletos(
             pedido["acumulado"]
         )
 
+        if prendas_base:
 
-        if prendas:
+            print("\n===== PRENDAS BASE =====\n")
 
-            print("\n===== PRENDAS =====\n")
-
-            for clave, cantidad in prendas.items():
-
-                print(
-                    f"{clave:<25} -> {cantidad}"
-                )
+            for clave, cantidad in prendas_base.items():
+                print(f"{clave:<25} -> {cantidad}")
 
         if incompletos:
 
@@ -434,17 +427,10 @@ class OperacionesListado:
 
             for item in incompletos:
 
-                print(
-                    f"{item['prenda']} {item['talla']}"
-                )
+                print(f"{item['prenda']} {item['talla']}")
 
-                for pieza, cantidad in (
-                    item["piezas"].items()
-                ):
-
-                    print(
-                        f"  {pieza:<20}: {cantidad}"
-                    )
+                for pieza, cantidad in item["piezas"].items():
+                    print(f"  {pieza:<20}: {cantidad}")
 
                 print()  
 

@@ -1,4 +1,5 @@
 from configuracion.orden_tallas import ORDEN_TALLAS
+from comparador.configuracion_pedidos import PEDIDOS
 from comparador.configuracion_prendas import PRENDAS
 
 
@@ -10,26 +11,30 @@ class EnsambladorPrendas:
 
         for talla in ORDEN_TALLAS:
 
-            for nombre_prenda, piezas in PRENDAS.items():
+            for nombre_pedido, lista_prendas in PEDIDOS.items():
 
-                cantidades = []
+                for prenda in lista_prendas:
 
-                for pieza in piezas:
+                    piezas = PRENDAS[prenda]
 
-                    cantidades.append(
-                        resumen.get(
-                            f"{pieza} {talla}",
-                            0
+                    cantidades = []
+
+                    for pieza in piezas:
+
+                        cantidades.append(
+                            resumen.get(
+                                f"{pieza} {talla}",
+                                0
+                            )
                         )
-                    )
 
-                ensambladas = min(cantidades)
+                    ensambladas = min(cantidades)
 
-                if ensambladas > 0:
+                    if ensambladas > 0:
 
-                    prendas[
-                        f"{nombre_prenda} {talla}"
-                    ] = ensambladas
+                        key = f"{nombre_pedido} {talla}"
+
+                        prendas[key] = prendas.get(key, 0) + ensambladas
 
         return prendas
 
@@ -58,35 +63,32 @@ class EnsambladorPrendas:
 
         for talla in ORDEN_TALLAS:
 
-            for nombre_prenda in PRENDAS:
+            for nombre_pedido, lista_prendas in PEDIDOS.items():
 
-                piezas = self.obtener_piezas_prenda(
-                    resumen,
-                    talla,
-                    nombre_prenda
-                )
+                for prenda in lista_prendas:
 
-                cantidades = list(
-                    piezas.values()
-                )
+                    piezas = self.obtener_piezas_prenda(
+                        resumen,
+                        talla,
+                        prenda
+                    )
 
-                maximo = max(cantidades)
+                    maximo = max(piezas.values())
 
-                if maximo == 0:
-                    continue
+                    if maximo == 0:
+                        continue
 
-                ensambladas = min(cantidades)
+                    ensambladas = min(piezas.values())
 
-                if ensambladas < maximo:
+                    if ensambladas < maximo:
 
-                    incompletos.append({
+                        incompletos.append({
 
-                        "prenda": nombre_prenda,
+                            "pedido": nombre_pedido,
+                            "prenda": prenda,
+                            "talla": talla,
+                            "piezas": piezas
 
-                        "talla": talla,
-
-                        "piezas": piezas
-
-                    })
+                        })
 
         return incompletos

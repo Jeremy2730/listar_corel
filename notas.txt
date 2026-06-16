@@ -5,6 +5,7 @@ py -3.11 -m venv .venv
 
 python -m tests.probar_menu
 
+1 camiseta xl, 4 uniforme m, 3 uniforme s, 1 uniforme 16, 1 uniforme 14, 3 uniforme 12
 
 rm -r .venv                      ---borrar entorno
 python -m venv .venv             ---crea entorno

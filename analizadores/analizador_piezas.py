@@ -10,6 +10,7 @@ class AnalizadorPiezas:
         self.conteo = defaultdict(int)
         self.no_reconocidos = defaultdict(int)
         self.buscador = BuscadorCatalogo()
+        
 
     def analizar(self, shape):
 
@@ -48,10 +49,20 @@ class AnalizadorPiezas:
 
             else:
 
-                clave = (
-                    f"{self.formatear(medidas[0])} x "
-                    f"{self.formatear(medidas[1])} cm"
-                )
+                if nombre_shape:
+
+                    clave = (
+                        f"{nombre_shape} | "
+                        f"{self.formatear(medidas[0])} x "
+                        f"{self.formatear(medidas[1])} cm"
+                    )
+
+                else:
+
+                    clave = (
+                        f"{self.formatear(medidas[0])} x "
+                        f"{self.formatear(medidas[1])} cm"
+                    )
 
                 self.no_reconocidos[clave] += 1
 

@@ -20,6 +20,26 @@
             }
         },
         {
+            "archivo": "uruguay_4.cdr",
+            "resumen": {
+                "pantaloneta derecho 14": 1,
+                "pantaloneta izquierdo 14": 1,
+                "pantaloneta derecho 12": 3,
+                "pantaloneta izquierdo 12": 3
+            }
+        },
+        {
+            "archivo": "uruguay_3.cdr",
+            "resumen": {
+                "pantaloneta derecho 16": 1,
+                "pantaloneta izquierdo 16": 1,
+                "pantaloneta derecho S": 3,
+                "pantaloneta izquierdo S": 3,
+                "pantaloneta derecho M": 4,
+                "pantaloneta izquierdo M": 4
+            }
+        },
+        {
             "archivo": "uruguay_2.cdr",
             "resumen": {
                 "espalda 12": 3,
@@ -30,20 +50,13 @@
                 "delantero 16": 1,
                 "espalda S": 2,
                 "delantero S": 2,
-                "manga izquierda S": 6,
+                "manga izquierda S": 3,
+                "manga derecha S": 3,
                 "manga derecha M": 4,
                 "manga izquierda M": 4,
                 "manga derecha XL": 1,
                 "manga izquierda XL": 1
             }
-        },
-        {
-            "archivo": "uruguay_3.cdr",
-            "resumen": {}
-        },
-        {
-            "archivo": "uruguay_4.cdr",
-            "resumen": {}
         }
     ],
     "acumulado": {
@@ -59,13 +72,24 @@
         "manga izquierda 14": 1,
         "manga derecha 12": 3,
         "manga izquierda 12": 3,
+        "pantaloneta derecho 14": 1,
+        "pantaloneta izquierdo 14": 1,
+        "pantaloneta derecho 12": 3,
+        "pantaloneta izquierdo 12": 3,
+        "pantaloneta derecho 16": 1,
+        "pantaloneta izquierdo 16": 1,
+        "pantaloneta derecho S": 3,
+        "pantaloneta izquierdo S": 3,
+        "pantaloneta derecho M": 4,
+        "pantaloneta izquierdo M": 4,
         "espalda 12": 3,
         "delantero 12": 3,
         "espalda 14": 1,
         "delantero 14": 1,
         "espalda 16": 1,
         "delantero 16": 1,
-        "manga izquierda S": 6,
+        "manga izquierda S": 3,
+        "manga derecha S": 3,
         "manga derecha M": 4,
         "manga izquierda M": 4,
         "manga derecha XL": 1,
