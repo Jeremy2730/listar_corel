@@ -57,13 +57,37 @@
                 "manga derecha XL": 1,
                 "manga izquierda XL": 1
             }
+        },
+        {
+            "archivo": "uruguay_6.cdr",
+            "resumen": {
+                "manga derecha 6": 4,
+                "espalda 4": 1,
+                "delantero 6": 6,
+                "espalda 6": 6,
+                "delantero 8": 5,
+                "espalda 8": 4
+            }
+        },
+        {
+            "archivo": "uruguay_5.cdr",
+            "resumen": {
+                "manga derecha 8": 4,
+                "espalda 8": 4,
+                "delantero 8": 3,
+                "delantero 10": 2,
+                "espalda 10": 2,
+                "espalda 16": 1,
+                "espalda M": 1,
+                "delantero M": 1
+            }
         }
     ],
     "acumulado": {
         "espalda S": 3,
         "delantero S": 3,
-        "espalda M": 4,
-        "delantero M": 4,
+        "espalda M": 5,
+        "delantero M": 5,
         "espalda XL": 1,
         "delantero XL": 1,
         "manga derecha 16": 1,
@@ -86,13 +110,22 @@
         "delantero 12": 3,
         "espalda 14": 1,
         "delantero 14": 1,
-        "espalda 16": 1,
+        "espalda 16": 2,
         "delantero 16": 1,
         "manga izquierda S": 3,
         "manga derecha S": 3,
         "manga derecha M": 4,
         "manga izquierda M": 4,
         "manga derecha XL": 1,
-        "manga izquierda XL": 1
+        "manga izquierda XL": 1,
+        "manga derecha 6": 4,
+        "espalda 4": 1,
+        "delantero 6": 6,
+        "espalda 6": 6,
+        "delantero 8": 8,
+        "espalda 8": 8,
+        "manga derecha 8": 4,
+        "delantero 10": 2,
+        "espalda 10": 2
     }
 }

@@ -11,6 +11,9 @@ from comparador.ensamblador_prendas import EnsambladorPrendas
 from agentes.agente_pedido_manual import AgentePedidoManual
 from inventario.estante_prendas import EstantePrendas
 from agentes.agente_ensamblador_prendas import AgenteEnsambladorPrendas
+from inventario.estante_conjuntos import EstanteConjuntos
+from agentes.agente_ensamblador_conjuntos import AgenteEnsambladorConjuntos
+
 
 class OperacionesListado:
 
@@ -245,6 +248,20 @@ class OperacionesListado:
             pedido_guardado["acumulado"]
         )
 
+        estante_conjuntos = (
+            EstanteConjuntos()
+        )
+
+        agente_conjuntos = (
+            AgenteEnsambladorConjuntos(
+                estante_conjuntos
+            )
+        )
+
+        conjuntos = agente_conjuntos.trabajar(
+            produccion
+        )
+
         print(
         "\n===== ESTANTE PRENDAS =====\n"
         )
@@ -257,14 +274,16 @@ class OperacionesListado:
                 prenda["cantidad"]
             )
 
+        print(
+            "\n===== CONJUNTOS ENSAMBLADOS =====\n"
+        )
 
-        print("\n===== PRUEBA ESTANTE PRENDAS =====\n")
-
-        for clave, cantidad in produccion.items():
+        for clave, cantidad in conjuntos.items():
 
             print(
                 f"{clave:<25} -> {cantidad}"
             )
+
 
         resultado, faltantes, sobrantes = (
 

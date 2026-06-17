@@ -93,7 +93,8 @@ class ResumenProduccion:
         )
 
         no_reconocidos = sum(
-            self.no_reconocidos.values()
+            item["cantidad"]
+            for item in self.no_reconocidos.values()
         )
 
         print(
