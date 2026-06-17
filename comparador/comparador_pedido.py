@@ -1,3 +1,5 @@
+#comparador pedido
+
 from configuracion.orden_tallas import ORDEN_TALLAS
 from comparador.configuracion_prendas import PRENDAS
 

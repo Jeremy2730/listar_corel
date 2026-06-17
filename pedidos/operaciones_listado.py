@@ -9,6 +9,8 @@ from configuracion.orden_tallas import ORDEN_TALLAS
 from comparador.comparador_pedido import ComparadorPedido
 from comparador.ensamblador_prendas import EnsambladorPrendas
 from agentes.agente_pedido_manual import AgentePedidoManual
+from inventario.estante_prendas import EstantePrendas
+from agentes.agente_ensamblador_prendas import AgenteEnsambladorPrendas
 
 class OperacionesListado:
 
@@ -231,9 +233,38 @@ class OperacionesListado:
             self.pedido_manager.cargar()
         )
 
-        produccion = self.ensamblador.obtener_prendas(
+        estante_prendas = EstantePrendas()
+
+        agente_ensamblador = (
+            AgenteEnsambladorPrendas(
+                estante_prendas
+            )
+        )
+
+        produccion = agente_ensamblador.trabajar(
             pedido_guardado["acumulado"]
         )
+
+        print(
+        "\n===== ESTANTE PRENDAS =====\n"
+        )
+
+        for prenda in estante_prendas.obtener_todas():
+
+            print(
+                prenda["clave"],
+                "->",
+                prenda["cantidad"]
+            )
+
+
+        print("\n===== PRUEBA ESTANTE PRENDAS =====\n")
+
+        for clave, cantidad in produccion.items():
+
+            print(
+                f"{clave:<25} -> {cantidad}"
+            )
 
         resultado, faltantes, sobrantes = (
 
