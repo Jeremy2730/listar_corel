@@ -13,6 +13,9 @@ from inventario.estante_prendas import EstantePrendas
 from agentes.agente_ensamblador_prendas import AgenteEnsambladorPrendas
 from inventario.estante_conjuntos import EstanteConjuntos
 from agentes.agente_ensamblador_conjuntos import AgenteEnsambladorConjuntos
+from agentes.agente_reporte_produccion import AgenteReporteProduccion
+from reportes.reporte_cliente import ReporteCliente
+        
 
 
 class OperacionesListado:
@@ -230,6 +233,7 @@ class OperacionesListado:
 
         agente = AgentePedidoManual()
 
+
         pedido_manual = agente.capturar()
 
         pedido_guardado = (
@@ -243,6 +247,7 @@ class OperacionesListado:
                 estante_prendas
             )
         )
+
 
         produccion = agente_ensamblador.trabajar(
             pedido_guardado["acumulado"]
@@ -260,6 +265,21 @@ class OperacionesListado:
 
         conjuntos = agente_conjuntos.trabajar(
             produccion
+        )
+
+        reporter = ReporteCliente()
+
+        pedido_cliente = (
+            reporter.convertir_pedido(
+                pedido_manual
+            )
+        )
+
+        produccion_cliente = (
+            reporter.convertir_produccion(
+                produccion,
+                conjuntos
+            )
         )
 
         print(
@@ -284,6 +304,30 @@ class OperacionesListado:
                 f"{clave:<25} -> {cantidad}"
             )
 
+        print(
+        "\n===== PEDIDO CLIENTE =====\n"
+        )
+
+        for clave, cantidad in (
+            pedido_cliente.items()
+        ):
+
+            print(
+                f"{clave:<25} -> {cantidad}"
+            )
+
+        print(
+            "\n===== PRODUCCION CLIENTE =====\n"
+        )
+
+        for clave, cantidad in (
+            produccion_cliente.items()
+        ):
+
+            print(
+                f"{clave:<25} -> {cantidad}"
+            )
+
 
         resultado, faltantes, sobrantes = (
 
@@ -299,6 +343,16 @@ class OperacionesListado:
             sobrantes
         )
 
+        agente_reporte = (
+            AgenteReporteProduccion()
+        )
+
+        agente_reporte.trabajar(
+            pedido_cliente,
+            produccion_cliente,
+            faltantes,
+            sobrantes
+        )
 
     def agregar_documento(self):
 
