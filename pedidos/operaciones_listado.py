@@ -1,31 +1,25 @@
-from corel.corel_api import CorelAPI
-from analizadores.analizador_piezas import AnalizadorPiezas
-from pedidos.resumen_documento import ResumenDocumento
-from pedidos.resumen_produccion import ResumenProduccion
-from pedidos.pedido_manager import PedidoManager
+from servicios.pedido_servicio import PedidoServicio
 from pedidos.estado_manager import EstadoManager
-from datetime import date
-from configuracion.orden_tallas import ORDEN_TALLAS
-from comparador.comparador_pedido import ComparadorPedido
-from comparador.ensamblador_prendas import EnsambladorPrendas
-from pedidos.resumen_documento import ResumenDocumento
-from comparador.motor_prioridad import MotorPrioridad
+from reportes.formateador_acumulado import mostrar_acumulado
+from reportes.formateador_produccion import mostrar_resumen
+from reportes.formateador_estado import mostrar_estado_pedido
+from reportes.formateador_listado import mostrar_listado
+from servicios.selector_documento import seleccionar_documento
+from servicios.documento_actual import obtener_documento_actual
+
 
 class OperacionesListado:
 
 
     def __init__(self):
 
-        self.pedido_manager = PedidoManager()
+        self.pedido_servicio = PedidoServicio()
         self.estado_manager = EstadoManager()
-        self.comparador = ComparadorPedido()
-        self.ensamblador = EnsambladorPrendas()
-        self.motor = MotorPrioridad()
 
 
     def ver_listado(self):
 
-        pedido = self.pedido_manager.cargar()
+        pedido = self.pedido_servicio.obtener()
 
         if not pedido:
 
@@ -35,27 +29,8 @@ class OperacionesListado:
 
             return
 
-        print("\n===== LISTADO ACTIVO =====\n")
-
-        print(f"Nombre: {pedido['nombre']}")
-        print(f"Fecha: {pedido['fecha']}")
-
-        print("\nDocumentos cargados:\n")
-
-        for i, doc in enumerate(
-            pedido["documentos"],
-            start=1
-        ):
-
-            print(
-                f"{i}. {doc['archivo']}"
-            )
-
-        print()
-
-        print(
-            f"Total documentos: "
-            f"{len(pedido['documentos'])}"
+        mostrar_listado(
+            pedido
         )
 
 
@@ -69,7 +44,7 @@ class OperacionesListado:
 
             return
 
-        pedido = self.pedido_manager.cargar()
+        pedido = self.pedido_servicio.obtener()
 
         if not pedido:
 
@@ -79,31 +54,9 @@ class OperacionesListado:
 
             return
 
-        print("\n==========================")
-        print(
-            f"📋 Listado activo "
+        mostrar_estado_pedido(
+            pedido
         )
-        print("==========================\n")       
-
-        print(
-            f"Nombre: "
-            f"{pedido['nombre']}"
-        )
-
-        print(
-            f"Documentos: "
-            f"{len(pedido['documentos'])}"
-        )
-
-        total = sum(
-            pedido["acumulado"].values()
-        )
-
-        print(
-            f"Piezas acumuladas: {total}"
-        )
-
-        print()
 
 
     def crear_listado(self):
@@ -112,48 +65,23 @@ class OperacionesListado:
             "\nNombre del listado: "
         )
 
-        corel = CorelAPI()
+        nombre_documento, analizador = self._obtener_analizador()
 
-        if not corel.conectar():
+        if not analizador:
             return
 
-        print()
-        print("DOCUMENTO:")
-        print(corel.doc.Name)
-        print()
-
-        nombre_documento = corel.doc.Name
-
-        analizador = AnalizadorPiezas()
-
-        for shape in corel.obtener_shapes():
-            analizador.analizar(shape)
-
-        resumen = ResumenProduccion(
+        mostrar_resumen(
             analizador.obtener_resumen(),
+            "DOCUMENTO",
             analizador.obtener_no_reconocidos()
         )
 
-        resumen.mostrar()
+        self.pedido_servicio.crear(
 
-        datos_pedido = {
+            nombre_listado,
+            nombre_documento,
+            analizador
 
-            "nombre": nombre_listado,
-
-            "fecha": str(date.today()),
-
-            "documentos": [
-                {
-                    "archivo": nombre_documento,
-                    "resumen": analizador.obtener_resumen()
-                }
-            ],
-
-            "acumulado": analizador.obtener_resumen()
-        }
-
-        self.pedido_manager.guardar(
-            datos_pedido
         )
 
         self.estado_manager.marcar_pedido_activo()
@@ -165,7 +93,7 @@ class OperacionesListado:
 
     def administrar_listado(self):
 
-        pedido = self.pedido_manager.cargar()
+        pedido = self.pedido_servicio.obtener()
 
         if not pedido:
 
@@ -181,12 +109,11 @@ class OperacionesListado:
             print("3. Comparar pedido")
             print("4. Volver")
 
-            opcion = input("Seleccione una opción: ").strip()
+            opcion = input("\nSeleccione una opción: ").strip()
 
             if opcion == "1":
 
-                resumen = ResumenDocumento(pedido["acumulado"])
-                resumen.mostrar_acumulado()
+                self.ver_acumulado()
 
             elif opcion == "2":
                 self.eliminar_documento()
@@ -210,7 +137,7 @@ class OperacionesListado:
             print("2. Pedido Excel")
             print("3. Volver")
 
-            opcion = input("Seleccione una opción: ").strip()
+            opcion = input("\nSeleccione una opción: ").strip()
 
             if opcion == "1":
                 self.comparar_pedido_manual()
@@ -225,35 +152,14 @@ class OperacionesListado:
                 print("Opción inválida.")
 
 
-    def comparar_pedido_manual(self):
-
-        pedido_manual = self.comparador.capturar_pedido_manual()
-
-        if not pedido_manual:
-            print("No hay pedido para comparar")
-            return
-
-        pedido_guardado = self.pedido_manager.cargar()
-
-        produccion = self.ensamblador.obtener_prendas(
-            pedido_guardado["acumulado"]
-        )
-
-        resultado, faltantes, sobrantes = self.comparador.comparar_pedido(
-            pedido_manual,
-            produccion
-        )
-
-        self.comparador.mostrar_comparacion(
-            resultado,
-            faltantes,
-            sobrantes
-        )
-
-
     def agregar_documento(self):
 
-        pedido = self.pedido_manager.cargar()
+        nombre_documento, analizador = self._obtener_analizador()
+
+        if not analizador:
+            return
+
+        pedido = self.pedido_servicio.obtener()
 
         if not pedido:
 
@@ -262,18 +168,6 @@ class OperacionesListado:
             )
 
             return
-
-        corel = CorelAPI()
-
-        if not corel.conectar():
-            return
-
-        nombre_documento = corel.doc.Name
-
-        print()
-        print("DOCUMENTO:")
-        print(nombre_documento)
-        print()
 
         for doc in pedido["documentos"]:
 
@@ -285,18 +179,12 @@ class OperacionesListado:
 
                 return
 
-        analizador = AnalizadorPiezas()
-
-        for shape in corel.obtener_shapes():
-
-            analizador.analizar(shape)
-
-        resumen = ResumenProduccion(
+        mostrar_resumen(
             analizador.obtener_resumen(),
+            "DOCUMENTO",
             analizador.obtener_no_reconocidos()
         )
 
-        resumen.mostrar()
 
         respuesta = input(
             "\nAgregar documento al listado? (s/n): "
@@ -310,33 +198,12 @@ class OperacionesListado:
 
             return
 
-        nuevo_documento = {
+        self.pedido_servicio.agregar_documento(
 
-            "archivo": nombre_documento,
+            pedido,
+            nombre_documento,
+            analizador
 
-            "resumen": analizador.obtener_resumen()
-        }
-
-        pedido["documentos"].append(
-            nuevo_documento
-        )
-
-        for clave, cantidad in (
-            analizador.obtener_resumen().items()
-        ):
-
-            pedido["acumulado"][clave] = (
-
-                pedido["acumulado"].get(
-                    clave,
-                    0
-                )
-
-                + cantidad
-            )
-
-        self.pedido_manager.guardar(
-            pedido
         )
 
         print(
@@ -346,7 +213,7 @@ class OperacionesListado:
 
     def eliminar_listado(self):
 
-        if self.pedido_manager.eliminar():
+        if self.pedido_servicio.eliminar():
 
             self.estado_manager.marcar_sin_pedido()
 
@@ -363,81 +230,40 @@ class OperacionesListado:
 
     def listar_documento_actual(self):
 
-        corel = CorelAPI()
+        documento = self._obtener_documento()
 
-        if not corel.conectar():
+        if not documento:
             return
 
-        print()
-        print("DOCUMENTO:")
-        print(corel.doc.Name)
-        print()
+        analizador = documento["analizador"]
 
-        analizador = AnalizadorPiezas()
-
-        for shape in corel.obtener_shapes():
-            analizador.analizar(shape)
-
-
-        resumen = ResumenDocumento(
+        mostrar_resumen(
             analizador.obtener_resumen(),
+            "DOCUMENTO ACTUAL",
             analizador.obtener_no_reconocidos()
         )
-
-        resumen.mostrar()
 
 
     def ver_acumulado(self):
 
-        pedido = self.pedido_manager.cargar()
+        pedido = self.pedido_servicio.obtener()
 
-        if not pedido or not pedido["acumulado"]:
-            print("\nNo hay piezas reconocidas.")
+        if not pedido:
+
+            print(
+                "\nNo existe listado activo."
+            )
+
             return
 
-        acumulado = self.ordenar_resumen(
-            pedido["acumulado"]
+        mostrar_acumulado(
+            pedido
         )
-
-        print("\n===== ACUMULADO =====\n")
-
-        for clave, cantidad in acumulado.items():
-            print(f"{clave:<20} -> {cantidad}")
-
-        # 🔥 PRENDAS BASE (camiseta, buso, peto, pantaloneta)
-        prendas_base = self.ensamblador.obtener_prendas_base(
-            pedido["acumulado"]
-        )
-
-        # 🔥 INCOMPLETOS
-        incompletos = self.ensamblador.obtener_incompletos(
-            pedido["acumulado"]
-        )
-
-        if prendas_base:
-
-            print("\n===== PRENDAS BASE =====\n")
-
-            for clave, cantidad in prendas_base.items():
-                print(f"{clave:<25} -> {cantidad}")
-
-        if incompletos:
-
-            print("\n===== INCOMPLETOS =====\n")
-
-            for item in incompletos:
-
-                print(f"{item['prenda']} {item['talla']}")
-
-                for pieza, cantidad in item["piezas"].items():
-                    print(f"  {pieza:<20}: {cantidad}")
-
-                print()  
 
 
     def eliminar_documento(self):
 
-        pedido = self.pedido_manager.cargar()
+        pedido = self.pedido_servicio.obtener()
 
         if not pedido:
 
@@ -455,71 +281,18 @@ class OperacionesListado:
 
             return
 
-        print("\n===== ELIMINAR DOCUMENTO =====\n")
-
-        for i, doc in enumerate(
-            pedido["documentos"],
-            start=1
-        ):
-
-            print(
-                f"{i}. {doc['archivo']}"
-            )
-
-        opcion = input(
-            "\nNumero del documento: "
+        indice = seleccionar_documento(
+            pedido["documentos"]
         )
 
-        try:
-
-            indice = int(opcion) - 1
-
-        except ValueError:
-
-            print(
-                "Debe ingresar un numero."
-            )
-
+        if indice is None:
             return
 
-        if indice < 0 or indice >= len(
-            pedido["documentos"]
-        ):
-
-            print(
-                "Documento inexistente."
+        eliminado = (
+            self.pedido_servicio.eliminar_documento(
+                pedido,
+                indice
             )
-
-            return
-
-        eliminado = pedido[
-            "documentos"
-        ].pop(indice)
-
-        acumulado = {}
-
-        for documento in pedido[
-            "documentos"
-        ]:
-
-            for clave, cantidad in (
-                documento["resumen"].items()
-            ):
-
-                acumulado[clave] = (
-
-                    acumulado.get(
-                        clave,
-                        0
-                    )
-
-                    + cantidad
-                )
-
-        pedido["acumulado"] = acumulado
-
-        self.pedido_manager.guardar(
-            pedido
         )
 
         print()
@@ -534,28 +307,19 @@ class OperacionesListado:
         )
 
 
-    @staticmethod
-    def ordenar_resumen(resumen):
+    def _obtener_documento(self):
 
-        orden = {}
+        return obtener_documento_actual()
+ 
+    
+    def _obtener_analizador(self):
 
-        for clave, cantidad in resumen.items():
+        documento = self._obtener_documento()
 
-            producto, talla = clave.rsplit(" ", 1)
+        if not documento:
+            return None, None
 
-            if talla in ORDEN_TALLAS:
-                posicion = ORDEN_TALLAS.index(talla)
-            else:
-                posicion = 999
-
-            orden[clave] = (
-                posicion,
-                producto
-            )
-
-        return dict(
-            sorted(
-                resumen.items(),
-                key=lambda x: orden[x[0]]
-            )
-        )  
+        return (
+            documento["nombre"],
+            documento["analizador"]
+        )

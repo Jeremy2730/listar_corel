@@ -16,15 +16,11 @@ class AnalizadorPiezas:
 
         try:
 
-            ancho = round(
-                shape.SizeWidth * self.PULGADA_A_CM,
-                1
-            )
+            ancho = shape.SizeWidth * self.PULGADA_A_CM
+            alto = shape.SizeHeight * self.PULGADA_A_CM
 
-            alto = round(
-                shape.SizeHeight * self.PULGADA_A_CM,
-                1
-            )
+            ancho = round(ancho, 1)
+            alto = round(alto, 1)
 
             if ancho < 1 or alto < 1:
                 return
@@ -88,7 +84,7 @@ class AnalizadorPiezas:
 
     def formatear(self, valor):
 
-        if valor.is_integer():
+        if valor == int(valor):
             return str(int(valor))
 
         return str(valor)

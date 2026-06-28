@@ -1,98 +1,30 @@
 {
-    "nombre": "uruguay",
-    "fecha": "2026-06-14",
+    "nombre": "petos",
+    "fecha": "2026-06-27",
     "documentos": [
         {
-            "archivo": "uruguay_1.cdr",
+            "archivo": "petos 1.cdr",
             "resumen": {
-                "espalda S": 1,
-                "delantero S": 1,
-                "espalda M": 4,
-                "delantero M": 4,
-                "espalda XL": 1,
-                "delantero XL": 1,
-                "manga derecha 16": 1,
-                "manga izquierda 16": 1,
-                "manga derecha 14": 1,
-                "manga izquierda 14": 1,
-                "manga derecha 12": 3,
-                "manga izquierda 12": 3
-            }
-        },
-        {
-            "archivo": "uruguay_4.cdr",
-            "resumen": {
-                "pantaloneta derecho 14": 1,
-                "pantaloneta izquierdo 14": 1,
-                "pantaloneta derecho 12": 3,
-                "pantaloneta izquierdo 12": 3
-            }
-        },
-        {
-            "archivo": "uruguay_3.cdr",
-            "resumen": {
-                "pantaloneta derecho 16": 1,
-                "pantaloneta izquierdo 16": 1,
-                "pantaloneta derecho S": 3,
-                "pantaloneta izquierdo S": 3,
-                "pantaloneta derecho M": 4,
-                "pantaloneta izquierdo M": 4
-            }
-        },
-        {
-            "archivo": "uruguay_2.cdr",
-            "resumen": {
-                "espalda 12": 3,
-                "delantero 12": 3,
-                "espalda 14": 1,
-                "delantero 14": 1,
-                "espalda 16": 1,
-                "delantero 16": 1,
-                "espalda S": 2,
-                "delantero S": 2,
-                "manga izquierda S": 3,
-                "manga derecha S": 3,
-                "manga derecha M": 4,
-                "manga izquierda M": 4,
-                "manga derecha XL": 1,
-                "manga izquierda XL": 1
+                "delantero XL": 5,
+                "espalda XL": 5
+            },
+            "no_reconocidos": {
+                "21.9 x 38 cm": 3,
+                "23.1 x 36 cm": 3,
+                "3.7 x 28.9 cm": 3,
+                "3.3 x 26.2 cm": 2,
+                "17.7 x 27.7 cm": 2,
+                "9.7 x 33.2 cm": 1,
+                "9.9 x 33.2 cm": 1,
+                "3.5 x 27.6 cm": 3,
+                "18.6 x 29.1 cm": 2,
+                "10.2 x 35 cm": 1,
+                "10.4 x 35 cm": 1
             }
         }
     ],
     "acumulado": {
-        "espalda S": 3,
-        "delantero S": 3,
-        "espalda M": 4,
-        "delantero M": 4,
-        "espalda XL": 1,
-        "delantero XL": 1,
-        "manga derecha 16": 1,
-        "manga izquierda 16": 1,
-        "manga derecha 14": 1,
-        "manga izquierda 14": 1,
-        "manga derecha 12": 3,
-        "manga izquierda 12": 3,
-        "pantaloneta derecho 14": 1,
-        "pantaloneta izquierdo 14": 1,
-        "pantaloneta derecho 12": 3,
-        "pantaloneta izquierdo 12": 3,
-        "pantaloneta derecho 16": 1,
-        "pantaloneta izquierdo 16": 1,
-        "pantaloneta derecho S": 3,
-        "pantaloneta izquierdo S": 3,
-        "pantaloneta derecho M": 4,
-        "pantaloneta izquierdo M": 4,
-        "espalda 12": 3,
-        "delantero 12": 3,
-        "espalda 14": 1,
-        "delantero 14": 1,
-        "espalda 16": 1,
-        "delantero 16": 1,
-        "manga izquierda S": 3,
-        "manga derecha S": 3,
-        "manga derecha M": 4,
-        "manga izquierda M": 4,
-        "manga derecha XL": 1,
-        "manga izquierda XL": 1
+        "delantero XL": 5,
+        "espalda XL": 5
     }
 }

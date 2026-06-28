@@ -1,5 +1,6 @@
 from comparador.ensamblador_prendas import EnsambladorPrendas
 from configuracion.orden_tallas import ORDEN_TALLAS
+from servicios.agrupador_tallas import agrupar_por_tallas
 
 
 class ResumenProduccion:
@@ -15,16 +16,9 @@ class ResumenProduccion:
 
     def mostrar(self):
 
-        agrupado = {}
-
-        for clave, cantidad in sorted(self.conteo.items()):
-
-            producto, talla = clave.rsplit(" ", 1)
-
-            if talla not in agrupado:
-                agrupado[talla] = {}
-
-            agrupado[talla][producto] = cantidad
+        agrupado = agrupar_por_tallas(
+            self.conteo
+        )
 
 
         ensamblador = EnsambladorPrendas()

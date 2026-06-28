@@ -2,7 +2,7 @@ class Menu:
 
     def mostrar(self):
 
-        print("\n===== LISTAR COREL =====\n")
+        print("===== LISTAR COREL =====\n")
 
         print("1. Crear listado")
         print("2. Administrar listado")

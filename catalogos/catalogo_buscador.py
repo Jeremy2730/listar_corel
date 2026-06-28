@@ -3,6 +3,7 @@ from catalogos.mangas import CATALOGO_MANGAS
 from catalogos.mangas_largas import CATALOGO_MANGAS_LARGAS
 from catalogos.pantalonetas import CATALOGO_PANTALONETAS
 
+MODO_ESTRICTO = True
 
 class BuscadorCatalogo:
 
@@ -15,12 +16,18 @@ class BuscadorCatalogo:
             "pantaloneta": CATALOGO_PANTALONETAS
         }
 
+
+    def limpiar(self, valor):
+        if isinstance(valor, tuple):
+            return valor[0]
+        return valor
+
     def buscar(
         self,
         ancho,
         alto,
         nombre_shape
-        ):
+    ):
 
         nombre_shape = (
             nombre_shape
@@ -30,6 +37,12 @@ class BuscadorCatalogo:
             .replace("-", " ")
         )
 
+        if MODO_ESTRICTO and not nombre_shape:
+            return None
+
+        ancho = self.limpiar(ancho)
+        alto = self.limpiar(alto)
+
         ancho = round(ancho, 1)
         alto = round(alto, 1)
 
@@ -37,6 +50,7 @@ class BuscadorCatalogo:
 
         mejor_match = None
         menor_error = float("inf")
+        coincidencia_nombre = False
 
         for producto, catalogo in self.catalogos.items():
 
@@ -45,40 +59,28 @@ class BuscadorCatalogo:
                 for pieza, datos in piezas.items():
 
                     pieza_normalizada = (
-                        pieza
-                        .lower()
+                        pieza.lower()
                         .strip()
                         .replace("_", " ")
                         .replace("-", " ")
                     )
 
-                    if nombre_shape:
+                    if nombre_shape != pieza_normalizada:
+                        continue
 
-                        if nombre_shape != pieza_normalizada:
-
-                            continue
-
+                    coincidencia_nombre = True
 
                     medidas_catalogo = sorted([
                         round(datos["ancho"], 1),
                         round(datos["alto"], 1)
                     ])
 
-                    diferencia_ancho = abs(
-                        medidas_shape[0] - medidas_catalogo[0]
-                    )
+                    porc_ancho = abs(medidas_shape[0] - medidas_catalogo[0]) / medidas_catalogo[0]
+                    porc_alto = abs(medidas_shape[1] - medidas_catalogo[1]) / medidas_catalogo[1]
 
-                    diferencia_alto = abs(
-                        medidas_shape[1] - medidas_catalogo[1]
-                    )
-
-                    error = (
-                        diferencia_ancho +
-                        diferencia_alto
-                    )
+                    error = (porc_ancho + porc_alto) * 100
 
                     if error < menor_error:
-
                         menor_error = error
 
                         mejor_match = {
@@ -86,10 +88,11 @@ class BuscadorCatalogo:
                             "talla": talla,
                             "pieza": pieza
                         }
+        
+        if not coincidencia_nombre:
+            return None
 
-    
-        if menor_error <= 1:
+        if menor_error > 6:
+            return None
 
-            return mejor_match
-
-        return None
+        return mejor_match
