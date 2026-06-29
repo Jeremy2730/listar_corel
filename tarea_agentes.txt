@@ -1,0 +1,71 @@
+1
+
+AgentePedido
+
+Responsabilidad:
+
+Leer el pedido.
+
+Ejemplo
+
+5 Uniformes M
+3 Camisetas XL
+
+y convertirlo en órdenes.
+
+Nada más.
+
+-------------------------------------
+2
+
+AgentePrendas
+
+Recibe una orden.
+
+Pregunta:
+
+¿Qué necesita esta prenda?
+
+Va al estante piezas.
+
+Consume.
+
+Si logra construirla:
+
+la lleva al estante prendas.
+
+Si no:
+
+explica por qué.
+
+-----------------------------
+3
+
+AgenteConjuntos
+
+Recibe otra orden.
+
+Pregunta:
+
+¿Qué prendas necesita este conjunto?
+
+Va al estante prendas.
+
+Consume.
+
+Entrega el conjunto.
+
+Nunca guarda conjuntos.
+
+-------------------------------------
+4
+
+AgenteComparador
+
+Sólo compara
+
+Pedido
+
+vs
+
+Producción

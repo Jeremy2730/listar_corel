@@ -34,3 +34,78 @@ git init
 git add .
 git commit -m "nuevo nombre"
 
+-------------------------------------------------
+produccion/
+
+    motor_produccion.py
+
+    recetas.py
+
+    agentes/
+
+        agente_pedido.py
+
+        agente_prendas.py
+
+        agente_conjuntos.py
+
+        agente_reporte.py
+
+    estantes/
+
+        estante_piezas.py
+
+        estante_prendas.py
+
+        estante_pedido.py
+
+    recetas/
+
+        recetas_prendas.py
+
+        recetas_conjuntos.py
+
+
+
+--------------------------------------------------
+ idea para futuro
+
+
+ Incluso pensando en una futura interfaz
+
+Si algún día haces una ventana de "Administrador de Prendas", 
+el usuario podría crear una nueva prenda llenando un formulario:
+
+Nombre: Chaqueta
+Tipo: Prenda
+Descripción: Chaqueta deportiva
+Componentes:
+Delantero ×2
+Espalda ×1
+Manga izquierda ×1
+Manga derecha ×1
+Cuello ×1
+Cremallera ×1
+
+Al guardar, esa información se convertiría exactamente en una receta con esta estructura. 
+Es decir, estaríamos diseñando desde ahora un formato que no solo sirve para el código, 
+sino también para una futura herramienta donde puedas agregar o modificar prendas 
+sin tocar una sola línea del motor de producción. 
+Creo que ese es un buen objetivo para este proyecto.
+
+
+
+---------------------------------------------------
+
+Creo que ya tenemos la arquitectura definitiva
+
+Fíjate cómo cada pieza tiene una única responsabilidad:
+
+Corel + Analizador: generan el inventario de piezas acumuladas.
+EstantePiezas: representa ese inventario y permite consumir piezas.
+AgentePedido: convierte el pedido (manual o Excel) al formato interno.
+AgentePrendas: consume piezas y fabrica únicamente las prendas solicitadas.
+AgenteConjuntos: consume prendas y fabrica únicamente los conjuntos solicitados.
+EstanteProduccion: guarda el resultado final de lo que sí se pudo fabricar.
+Comparador: compara el pedido con la producción.
+Reporte: muestra el pedido atendido, las prendas sobrantes, las piezas sobrantes y los no reconocidos
